@@ -8,6 +8,7 @@ from accounts.forms import UserForm
 from accounts.models import User, UserProfile
 from accounts.utils import detectUser, check_role_customer, check_role_vendor, send_verification_email
 from vendor.forms import VendorForm
+from vendor.models import Vendor
 
 
 # Create your views here.
