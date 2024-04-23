@@ -1,5 +1,6 @@
 from django import forms
-from accounts.models import User
+from accounts.models import User, UserProfile
+from accounts.validators import allow_only_image_validators
 
 
 class UserForm(forms.ModelForm):
@@ -18,3 +19,22 @@ class UserForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Password does not match!"
             )
+
+
+
+class UserProfileForm(forms.ModelForm):
+    address = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Start typing...', 'required': 'required'}))
+    profile_picture = forms.FileField(widget=forms.FileInput(attrs={'class': 'btn btn-info'}), validators=[allow_only_image_validators]) #  in here widget make css runable to forms in browser
+    cover_photo = forms.FileField(widget=forms.FileInput(attrs={'class': 'btn btn-info'}), validators=[allow_only_image_validators])
+
+    # latitude = forms.CharField(widget=forms.TextInput(attrs={'readonly': 'readonly'}))  # second way to being read only is in below , writed by __init__
+    # longitude = forms.CharField(widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    class Meta:
+        model = UserProfile
+        fields = ['profile_picture', 'cover_photo', 'address', 'country', 'state', 'city', 'pin_code', 'latitude', 'longitude']
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            if field == 'latitude' or field == 'longitude':
+                self.fields[field].widget.attrs['readonly'] = 'readonly'
